@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import itertools
 import re
 import numpy as np
+
 def read_hex(filename):
     with open(filename, 'rb') as f:
         hexdata = binascii.hexlify(f.read())
@@ -18,6 +19,9 @@ def bytes_to_char(hex_data):
         char_array.append(chr(num))
     return char_array
 
+def print_char_array(char_array):
+    print(''.join(char_array))
+    
 def frequency_counter(char_array):
     alphabet = list(set(char_array))
     alphabet.sort()
@@ -25,6 +29,8 @@ def frequency_counter(char_array):
     for char in char_array:
         index = alphabet.index(char)
         frequencies[index] += 1
+    for i in range(len(frequencies)):
+        frequencies[i] /= len(char_array)
     return frequencies, alphabet
 
 def split_cipher_text(cipher_text,key_length):
@@ -74,29 +80,3 @@ def conditioning(cipher_text):
 def find_shift(original,shifted):
     shift = ord(original) - ord(shifted)
     return shift
-
-cipher_text = "Zac xhjk hd zac glqklqsxlzl ugl rxtbomgugyrew zh rklr unrihkkl ml mcgvfoge og mxwcx mm mkyjx qznbkgry. Tlumfkk dagazbmt hd zac glqklqsxlzl gy mm ynnvhpz mfk ecgkloge vkmixqy, mfk eyzmcx isximyx fgl lum yrpyel zkxl kfnntqolcj. Xtowctvc yamcl rntr ymsjxlzl bkygtx y inpxbaaess uyyxb ug rnx yylcylkkgr ggb alc om ru zsowc zacok syx ml mgsx, yzmctmgug, ytw pklmakakl"
-cipher_text = conditioning(cipher_text)
-print(cipher_text)
-
-cipher_list = split_cipher_text(cipher_text,3)
-shifted_cipher_list = []
-for text in cipher_list:
-    frequencies, alphabet = frequency_counter(text)
-
-    sorted_alphabet = [x for y, x in sorted(zip(frequencies, alphabet),reverse=True)]
-    index = frequencies.index(max(frequencies))
-    print(sorted(frequencies))
-    if(cipher_list.index(text)==1):
-        most_common_char = sorted_alphabet[0]
-        shift_amount = find_shift('s',most_common_char)
-        shifted_cipher_text = shift(text,shift_amount)
-        shifted_cipher_list.append(shifted_cipher_text)
-    else:
-        most_common_char = sorted_alphabet[0]
-        shift_amount = find_shift('e',most_common_char)
-        shifted_cipher_text = shift(text,shift_amount)
-        shifted_cipher_list.append(shifted_cipher_text)
-
-decoded_cipher_text = merge_cipher_text(shifted_cipher_list,3)
-print(''.join(decoded_cipher_text))
